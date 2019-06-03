@@ -38,11 +38,39 @@ func (block *Block) SetHash() {
 	block.Hash = hash[:]
 }
 
+// 引入区块链
+type BlockChain struct {
+	// 定一个区块链数组
+	blocks []*Block
+}
+
+// 定义一个区块链
+func NewBlockChain() *BlockChain {
+	// 创建一个创世块，并作为第一个区块添加到区块链中
+	genesisBlock := GenesisBlock()
+
+	return &BlockChain{
+		blocks:[]*Block{genesisBlock},
+
+	}
+}
+
+// 创世块
+func GenesisBlock() *Block {
+	return NewBlock("Go 创世块",[]byte{})
+
+}
+
 
 func main() {
+	bc := NewBlockChain()
 
-	block := NewBlock("老师转班长一枚比特币", []byte{})
-	fmt.Printf("前区块哈希: %x\n",block.PrevHash)
-	fmt.Printf("当前区块哈希: %x\n",block.Hash)
-	fmt.Printf("区块数据: %s\n",block.Data)
+	for i, block := range bc.blocks {
+		fmt.Printf("===== 当前区块高度: %d ====== \n",i)
+		fmt.Printf("前区块哈希: %x\n",block.PrevHash)
+		fmt.Printf("当前区块哈希: %x\n",block.Hash)
+		fmt.Printf("区块数据: %s\n",block.Data)
+	}
+
+
 }
