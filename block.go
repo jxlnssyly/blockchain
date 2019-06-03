@@ -58,10 +58,18 @@ func NewBlock(data string, prevBlockHash []byte) *Block  {
 		Hash: []byte{},
 		Data: []byte(data),
 	}
-	block.SetHash()
+	//block.SetHash()
+	// 创建一个pow对象
+	pow := NewProofOfWork(&block)
+	// 查找目标的随机数，不停的进行哈希运输
+	hash, nonce := pow.Run()
+
+	// 根据挖矿结果对区块数据进行更新
+	block.Hash = hash
+	block.Nonce = nonce
 	return &block
 }
-
+/*
 // 3.生成哈希
 func (block *Block) SetHash() {
 
@@ -95,3 +103,5 @@ func (block *Block) SetHash() {
 	hash := sha256.Sum256(blockInfo)
 	block.Hash = hash[:]
 }
+
+*/
