@@ -1,7 +1,6 @@
 package main
 
 import (
-	"crypto/sha256"
 	"time"
 	"bytes"
 	"encoding/binary"
@@ -85,7 +84,6 @@ func (block *Block) SetHash() {
 	blockInfo = append(blockInfo,Uint64ToByte(block.Difficulty)...) // byte拼接
 	blockInfo = append(blockInfo,Uint64ToByte(block.Nonce)...) // byte拼接
 	blockInfo = append(blockInfo,block.Data...) // byte拼接
-	*/
 	tmp := [][]byte{
 		Uint64ToByte(block.Version),
 		block.PrevHash,
