@@ -33,8 +33,6 @@ func NewProofOfWork(block *Block) *ProofOfWork {
 
 // 提供不断计算hash的函数
 func (pow *ProofOfWork) Run() ([]byte, uint64) {
-
-
 	var nonce uint64
 	block := pow.block
 	var hash [32]byte
@@ -68,7 +66,6 @@ func (pow *ProofOfWork) Run() ([]byte, uint64) {
 		} else { // 没找到
 			nonce++
 		}
-
 	}
 
 	return hash[:],nonce
