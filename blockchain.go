@@ -52,7 +52,7 @@ func NewBlockChain() *BlockChain {
 			}
 			genesisBlock := GenesisBlock()
 			// hash作为key，block字节流作为hash
-			bucket.Put(genesisBlock.Hash, genesisBlock.toByte())
+			bucket.Put(genesisBlock.Hash, genesisBlock.Serialize())
 			bucket.Put([]byte("LastHash"), genesisBlock.Hash)
 			lastHash = genesisBlock.Hash
 		} else {

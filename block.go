@@ -4,6 +4,8 @@ import (
 	"time"
 	"bytes"
 	"encoding/binary"
+	"encoding/gob"
+	"log"
 )
 
 // 定义结构
@@ -69,9 +71,25 @@ func NewBlock(data string, prevBlockHash []byte) *Block  {
 	return &block
 }
 
-func (block *Block)toByte() []byte  {
+func (block *Block)Serialize() []byte  {
+	// 编码数据放到buffer
+	var buffer bytes.Buffer
 
-	return []byte{}
+	// 定义一个编码器，使用编码器进行编码
+	encoder := gob.NewEncoder(&buffer)
+	err := encoder.Encode(&block)
+	if err != nil {
+		log.Panic(err)
+	}
+	return buffer.Bytes()
+}
+func Deserialize(data []byte) Block  {
+
+	// 定义一个解码器，使用解码器解码
+	decoder := gob.NewDecoder(bytes.NewReader(data))
+	var block Block
+	decoder.Decode(&block)
+	return block
 }
 
 /*
