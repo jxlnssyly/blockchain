@@ -1,4 +1,4 @@
 .idea/
-blockchain.db
+*.db
 block
 demo/

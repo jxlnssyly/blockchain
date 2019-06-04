@@ -51,7 +51,7 @@ func NewBlockChain() *BlockChain {
 			bucket.Put([]byte("LastHash"), genesisBlock.Hash)
 			lastHash = genesisBlock.Hash
 		} else {
-			bucket.Get([]byte("LastHash"))
+			lastHash = bucket.Get([]byte("LastHash"))
 		}
 
 		return nil
