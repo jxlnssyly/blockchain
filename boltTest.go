@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-func main() {
+func main1() {
 	// 打开数据库
 	db, err := bolt.Open("test.db",0600,nil)
 

@@ -14,17 +14,12 @@ type BlockChain struct {
 	tail []byte // 存储最后一个区块的哈希
 }
 
-const blockChainDB = "blockchain.db"
+const blockChainDB = "bc.db"
 const blockBucket = "blockBucket"
 
 // 定义一个区块链
 func NewBlockChain() *BlockChain {
 	// 创建一个创世块，并作为第一个区块添加到区块链中
-
-	//return &BlockChain{
-	//	blocks:[]*Block{genesisBlock},
-	//
-	//}
 
 	// 最后一个hash
 	var lastHash []byte
@@ -32,7 +27,7 @@ func NewBlockChain() *BlockChain {
 	// 打开数据库
 	db, err := bolt.Open(blockChainDB, 0600, nil)
 
-	defer db.Close()
+	//defer db.Close()
 
 	if err != nil {
 		fmt.Println("打开数据库失败")
@@ -71,16 +66,23 @@ func GenesisBlock() *Block {
 
 // 添加区块
 func (bc *BlockChain) AddBlock(data string) {
-	/*
+	db := bc.db // 数据库
 
-		// 获取前区块的哈希
-		lastBlock := bc.blocks[len(bc.blocks) - 1]
-		prevHash := lastBlock.Hash
+	lastHash := bc.tail //最后一条哈希
+	db.Update(func(tx *bolt.Tx) error {
 
-		// a.创建新的区块
-		block := NewBlock(data, prevHash)
+		bucket := tx.Bucket([]byte(blockBucket))
+		if bucket == nil {
+			log.Panic("bucket 不应该为空，请检查")
+		}
+		// 创建新区块
+		block := NewBlock(data,lastHash)
 
-		// b.添加到区块链数组中
-		bc.blocks = append(bc.blocks, block)
-		*/
+		bucket.Put(block.Hash, block.Serialize())
+		bucket.Put([]byte("LastHash"), block.Hash)
+
+		// 更新内存中的最后一个区块
+		bc.tail = block.Hash
+		return nil
+	})
 }
