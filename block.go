@@ -68,6 +68,12 @@ func NewBlock(data string, prevBlockHash []byte) *Block  {
 	block.Nonce = nonce
 	return &block
 }
+
+func (block *Block)toByte() []byte  {
+
+	return []byte{}
+}
+
 /*
 // 3.生成哈希
 func (block *Block) SetHash() {
