@@ -47,6 +47,23 @@ func (tx *Transaction) SetHash() {
 	tx.TXID = hash[:]
 }
 
+// 判断是否为挖矿交易
+func (tx *Transaction)IsCoinbase() bool  {
+	// 1.交易input只有一个
+
+	if len(tx.TXInputs) == 1 {
+
+		input := tx.TXInputs[0]
+		// 2.交易ID为空
+		// 3.交易的index为-1
+		if !bytes.Equal(input.TXid,[]byte{}) || input.Index != -1{
+			return false
+		}
+	}
+
+	return true
+}
+
 // 提供创建交易方法
 
 
