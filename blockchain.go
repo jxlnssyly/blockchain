@@ -91,8 +91,45 @@ func (bc *BlockChain) AddBlock(txs []*Transaction) {
 // 找到指定地址的所有的UTXO
 func (bc *BlockChain)FindUTXOs(address string) []TXOutput  {
 	var UTXO []TXOutput
+	spentOutputs := make(map[string][]int64)
+	// 1.遍历区块链
+	// 创建迭代器
+	it := bc.NewIterator()
+	for {
+		block := it.Next()
+		// 2.遍历交易
 
-	// TODO 找到指定地址的所有的UTXO
+		for _, tx := range block.Transactions {
+			fmt.Printf("current txid : %x\n",tx.TXID)
+			// 3.遍历Output,找到和自己相关的utxo(在添加output之前检查一下是否已经消耗过)
+			for i, output := range tx.TXOutputs {
+				fmt.Println(i)
+				// 这个output和我们目标的地址相同，满足条件，加到返回utxo数组中
+				if output.PubkeyHash == address {
+					UTXO = append(UTXO,output)
+				}
+			}
+
+			// 4.遍历input，找到自己花费过的UTXO集合(把自己消耗的标识出来)
+			// 定义Map来保存消费过的output，key是这个output的交易ID，value是这个交易中索引的数组
+			for _,input := range tx.TXInputs {
+				// 判断一下当前input和目标(李四)是否一致，如果相同，说明这个是李四消耗过的output，就加进来
+				if input.Sig == address {
+					indexArray := spentOutputs[string(tx.TXID)]
+					indexArray = append(indexArray,input.Index)
+				}
+			}
+		}
+
+		if len(block.PrevHash) == 0 {
+			fmt.Println("区块遍历完成，退出!")
+			break
+		}
+	}
+
+
+
+
 
 	return UTXO
 }

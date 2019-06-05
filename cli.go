@@ -14,7 +14,7 @@ const Usage = `
 	addBlock --data DATA "添加区块链"
 	printChain			"正向打印区块链"
 	printChainR			"反向打印区块链"
-	getBalance --address ADDRESS
+	getBalance --address ADDRESS "输入地址打印余额"
 `
 
 
