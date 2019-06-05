@@ -119,8 +119,6 @@ func (bc *BlockChain)FindUTXOs(address string) []TXOutput  {
 					}
 				}
 
-
-
 				// 这个output和我们目标的地址相同，满足条件，加到返回utxo数组中
 				if output.PubkeyHash == address {
 					UTXO = append(UTXO,output)
@@ -139,9 +137,6 @@ func (bc *BlockChain)FindUTXOs(address string) []TXOutput  {
 					}
 				}
 			}
-
-
-
 		}
 
 		if len(block.PrevHash) == 0 {
@@ -150,9 +145,15 @@ func (bc *BlockChain)FindUTXOs(address string) []TXOutput  {
 		}
 	}
 
-
-
-
-
 	return UTXO
 }
+
+func (bc *BlockChain)FindNeedUTXOs(from string, amount float64)(map[string][]uint64, float64 ) {
+	// 找到的合理的UTXO集合
+	var utxos map[string][]uint64
+	var calc float64 // 找到的utxos里面包含的钱的总数
+	// TODO
+
+	return utxos, calc
+}
+
