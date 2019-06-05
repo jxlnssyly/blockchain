@@ -33,7 +33,8 @@ type Block struct {
 	Hash []byte
 
 	// 数据
-	Data []byte
+	//Data []byte
+	Transactions []*Transaction
 }
 
 // 辅助函数 将uint转成[]byte
@@ -48,7 +49,7 @@ func Uint64ToByte(num uint64) []byte {
 }
 
 // 创建区块
-func NewBlock(data string, prevBlockHash []byte) *Block  {
+func NewBlock(txs []*Transaction, prevBlockHash []byte) *Block  {
 	block := Block{
 		Version: 00,
 		PrevHash:prevBlockHash,
@@ -57,9 +58,10 @@ func NewBlock(data string, prevBlockHash []byte) *Block  {
 		Difficulty:0, // 随便填写的无效值
 		Nonce:0, // 同上
 		Hash: []byte{},
-		Data: []byte(data),
+		Transactions:txs,
 	}
-	//block.SetHash()
+
+	block.MerkelRoot = block.MakeMerkelRoot()
 	// 创建一个pow对象
 	pow := NewProofOfWork(&block)
 	// 查找目标的随机数，不停的进行哈希运输
@@ -90,6 +92,12 @@ func Deserialize(data []byte) Block  {
 	var block Block
 	decoder.Decode(&block)
 	return block
+}
+
+// 模拟梅克尔根，不做二叉树处理
+func (block *Block) MakeMerkelRoot() []byte {
+
+	return []byte{}
 }
 
 /*

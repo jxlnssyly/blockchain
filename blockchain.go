@@ -18,7 +18,7 @@ const blockChainDB = "bc.db"
 const blockBucket = "blockBucket"
 
 // 定义一个区块链
-func NewBlockChain() *BlockChain {
+func NewBlockChain(address string) *BlockChain {
 	// 创建一个创世块，并作为第一个区块添加到区块链中
 
 	// 最后一个hash
@@ -45,7 +45,7 @@ func NewBlockChain() *BlockChain {
 			if err != nil {
 				log.Panic(err)
 			}
-			genesisBlock := GenesisBlock()
+			genesisBlock := GenesisBlock(address)
 			// hash作为key，block字节流作为hash
 			bucket.Put(genesisBlock.Hash, genesisBlock.Serialize())
 			bucket.Put([]byte("LastHash"), genesisBlock.Hash)
@@ -60,12 +60,13 @@ func NewBlockChain() *BlockChain {
 }
 
 // 创世块
-func GenesisBlock() *Block {
-	return NewBlock("Go 创世块", []byte{})
+func GenesisBlock(address string) *Block {
+	coinBase := NewCoinbaseTX(address,"Go 创世块")
+	return NewBlock([]*Transaction{coinBase}, []byte{})
 }
 
 // 添加区块
-func (bc *BlockChain) AddBlock(data string) {
+func (bc *BlockChain) AddBlock(txs []*Transaction) {
 	db := bc.db // 数据库
 
 	lastHash := bc.tail //最后一条哈希
@@ -76,7 +77,7 @@ func (bc *BlockChain) AddBlock(data string) {
 			log.Panic("bucket 不应该为空，请检查")
 		}
 		// 创建新区块
-		block := NewBlock(data,lastHash)
+		block := NewBlock(txs,lastHash)
 
 		bucket.Put(block.Hash, block.Serialize())
 		bucket.Put([]byte("LastHash"), block.Hash)
@@ -85,4 +86,13 @@ func (bc *BlockChain) AddBlock(data string) {
 		bc.tail = block.Hash
 		return nil
 	})
+}
+
+// 找到指定地址的所有的UTXO
+func (bc *BlockChain)FindUTXOs(address string) []TXOutput  {
+	var UTXO []TXOutput
+
+	// TODO 找到指定地址的所有的UTXO
+
+	return UTXO
 }

@@ -11,8 +11,10 @@ type CLI struct {
 }
 
 const Usage = `
-	addBlock --data DATA "add data to blockchain"
-	printChain			"print all blockchain data"
+	addBlock --data DATA "添加区块链"
+	printChain			"正向打印区块链"
+	printChainR			"反向打印区块链"
+	getBalance --address ADDRESS
 `
 
 
@@ -47,9 +49,25 @@ func (cli *CLI)Run()  {
 
 
 	case "printChain":
-		fmt.Println("打印区块")
+		fmt.Println("正向打印区块")
 
 		cli.PrintBlockChain()
+	case "printChainR":
+		fmt.Println("反向打印区块")
+
+		cli.PrintBlockChain()
+	case "getBalance":
+		fmt.Println("获取余额")
+		// 获取数据
+		if len(args) == 4 && args[2] == "--address" {
+			// 获取命令的数据
+			address := args[3]
+			// 添加区块
+			cli.GetBalance(address)
+		} else {
+			fmt.Println("添加区块数据使用参数不当，请检查")
+			fmt.Println(Usage)
+		}
 
 	default:
 		fmt.Println("无效的区块，请检查")
@@ -59,6 +77,15 @@ func (cli *CLI)Run()  {
 
 
 	// 执行相应动作
+}
+
+func (cli *CLI) GetBalance(address string) {
+	utxos := cli.bc.FindUTXOs(address)
+	total := 0.0
+	for _, utxo := range utxos {
+		total += utxo.Value
+	}
+	fmt.Println(address," 余额为: ",total)
 }
 
 
