@@ -12,7 +12,7 @@ type Person struct {
 	age uint
 }
 
-func main() {
+func main3() {
 	// 定义一个结构Person
 	var xiaoming Person
 	xiaoming.Name = "小明"
