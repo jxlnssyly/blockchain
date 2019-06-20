@@ -33,8 +33,6 @@ func NewProofOfWork(block *Block) *ProofOfWork {
 
 // 提供不断计算hash的函数
 func (pow *ProofOfWork) Run() ([]byte, uint64) {
-
-
 	var nonce uint64
 	block := pow.block
 	var hash [32]byte
@@ -47,8 +45,10 @@ func (pow *ProofOfWork) Run() ([]byte, uint64) {
 			Uint64ToByte(block.TimeStamp),
 			Uint64ToByte(block.Difficulty),
 			Uint64ToByte(nonce),
-			block.Data,
+			//只对区块头做哈希值，区块体通过Merkelroot影响hash
+			//block.Data,
 		}
+
 		// 将二维切片数组连接起来，返回一个一维切片
 		blockInfo := bytes.Join(tmp, []byte{})
 
@@ -68,7 +68,6 @@ func (pow *ProofOfWork) Run() ([]byte, uint64) {
 		} else { // 没找到
 			nonce++
 		}
-
 	}
 
 	return hash[:],nonce

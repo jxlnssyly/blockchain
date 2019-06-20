@@ -4,6 +4,9 @@ import (
 	"time"
 	"bytes"
 	"encoding/binary"
+	"encoding/gob"
+	"log"
+	"crypto/sha256"
 )
 
 // 定义结构
@@ -31,7 +34,8 @@ type Block struct {
 	Hash []byte
 
 	// 数据
-	Data []byte
+	//Data []byte
+	Transactions []*Transaction
 }
 
 // 辅助函数 将uint转成[]byte
@@ -46,7 +50,7 @@ func Uint64ToByte(num uint64) []byte {
 }
 
 // 创建区块
-func NewBlock(data string, prevBlockHash []byte) *Block  {
+func NewBlock(txs []*Transaction, prevBlockHash []byte) *Block  {
 	block := Block{
 		Version: 00,
 		PrevHash:prevBlockHash,
@@ -55,9 +59,10 @@ func NewBlock(data string, prevBlockHash []byte) *Block  {
 		Difficulty:0, // 随便填写的无效值
 		Nonce:0, // 同上
 		Hash: []byte{},
-		Data: []byte(data),
+		Transactions:txs,
 	}
-	//block.SetHash()
+
+	block.MerkelRoot = block.MakeMerkelRoot()
 	// 创建一个pow对象
 	pow := NewProofOfWork(&block)
 	// 查找目标的随机数，不停的进行哈希运输
@@ -68,6 +73,41 @@ func NewBlock(data string, prevBlockHash []byte) *Block  {
 	block.Nonce = nonce
 	return &block
 }
+
+func (block *Block)Serialize() []byte  {
+	// 编码数据放到buffer
+	var buffer bytes.Buffer
+
+	// 定义一个编码器，使用编码器进行编码
+	encoder := gob.NewEncoder(&buffer)
+	err := encoder.Encode(&block)
+	if err != nil {
+		log.Panic(err)
+	}
+	return buffer.Bytes()
+}
+func Deserialize(data []byte) Block  {
+
+	// 定义一个解码器，使用解码器解码
+	decoder := gob.NewDecoder(bytes.NewReader(data))
+	var block Block
+	decoder.Decode(&block)
+	return block
+}
+
+// 模拟梅克尔根，不做二叉树处理
+func (block *Block) MakeMerkelRoot() []byte {
+	var info []byte
+	// 将交易的hash值拼接起来，再整体做哈希处理
+	for _,tx := range block.Transactions {
+		info = append(info, tx.TXID...)
+	}
+
+	hash := sha256.Sum256(info)
+
+	return hash[:]
+}
+
 /*
 // 3.生成哈希
 func (block *Block) SetHash() {
