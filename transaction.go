@@ -52,17 +52,21 @@ func (tx *Transaction) SetHash() {
 func (tx *Transaction)IsCoinbase() bool  {
 	// 1.交易input只有一个
 
-	if len(tx.TXInputs) == 1 {
+	//if len(tx.TXInputs) == 1 {
+	//
+	//	input := tx.TXInputs[0]
+	//	// 2.交易ID为空
+	//	// 3.交易的index为-1
+	//	if !bytes.Equal(input.TXid,[]byte{}) || input.Index != -1{
+	//		return false
+	//	}
+	//}
 
-		input := tx.TXInputs[0]
-		// 2.交易ID为空
-		// 3.交易的index为-1
-		if !bytes.Equal(input.TXid,[]byte{}) || input.Index != -1{
-			return false
-		}
+	if len(tx.TXInputs) == 1 && len(tx.TXInputs[0].TXid) == 0 && tx.TXInputs[0].Index == -1 {
+		return true
 	}
 
-	return true
+	return false
 }
 
 // 创建普通交易
