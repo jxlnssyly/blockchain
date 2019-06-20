@@ -23,5 +23,17 @@ func (cli *CLI)PrintBlockChain()  {
 }
 
 func (cli *CLI)Send(from, to string, amount float64, miner, data string)  {
-	fmt.Println(from,to,amount,miner,data)
+	//fmt.Println(from,to,amount,miner,data)
+
+
+	// 1.创建挖矿交易
+	conbase := NewCoinbaseTX(miner,data)
+	// 2.创建一个普通交易
+	tx := NewTransaction(from, to, amount, cli.bc)
+	if tx == nil {
+		return
+	}
+	// 3.添加到区块
+	cli.bc.AddBlock([]*Transaction{conbase, tx})
+	fmt.Println("转账成功")
 }
