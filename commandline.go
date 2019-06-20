@@ -21,3 +21,7 @@ func (cli *CLI)PrintBlockChain()  {
 		}
 	}
 }
+
+func (cli *CLI)Send(from, to string, amount float64, miner, data string)  {
+	fmt.Println(from,to,amount,miner,data)
+}
